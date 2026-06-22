@@ -1,7 +1,6 @@
 #include "uart.h"
 #include "stdint.h"
 #include "string.h"
-#include "ringbuffer.h"
 #include "io.h"
 
 #define BUFFER_SIZE 128
@@ -13,12 +12,10 @@ static uint8_t bfull = 0;
 
 int main(void) {
   usart1_init();
-  ringbuffer_init();
 
   while(1) {
-    if (ringbuffer_available()) {
-      char ch;
-      ringbuffer_get(&ch);
+    char ch;
+    if (usart1_read_char(&ch) == USART1_READ_OK) {
       if (!bfull) usart1_write_char(ch);
 
       if (ch == '\r') {
@@ -30,7 +27,7 @@ int main(void) {
         if (bfull) {
           bfull = 0;
           printstr("\r\n");
-          return 0;
+          continue;
         }
 
         printstr("str : ");

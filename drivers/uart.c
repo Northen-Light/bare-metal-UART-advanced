@@ -27,6 +27,8 @@ void usart1_init(void) {
   NVIC_ISER1 |= (1 << 5);
   
   USART1_CR1 |= (1 << 13);
+
+  ringbuffer_init();
 }
 
 void usart1_write_char(char c) {
@@ -36,6 +38,12 @@ void usart1_write_char(char c) {
 
 void USART1_IRQHandler(void) {
   if (USART1_SR & (1 << 5)) {
-    ringbuffer_put(USART1_DR);
+    if (ringbuffer_put(USART1_DR) == RINGBUFFER_FULL) {};
   }
+}
+
+usart1_read_char_t usart1_read_char(char *ch) {
+  ringbuffer_status_t status = ringbuffer_get(ch);
+  if (status == RINGBUFFER_EMPTY) return USART1_READ_FAILED;
+  return USART1_READ_OK;
 }
