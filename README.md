@@ -1,6 +1,6 @@
-# STM32 UART Driver (Interrupt + Ring Buffer)
+# STM32 UART Communication Stack
 
-A bare-metal UART driver for STM32F103 written in C.
+A bare-metal UART communication stack for STM32F103 featuring interrupt-driven reception, ring-buffered data handling, and a modular driver architecture.
 
 ## Features
 
@@ -9,36 +9,39 @@ A bare-metal UART driver for STM32F103 written in C.
 * Ring buffer for asynchronous reception
 * Modular driver architecture
 * GNU Make build system
-* Tested using STM32F103 and CP2102 USB-UART adapter
+* Tested on STM32F103C8T6 (Blue Pill) using a CP2102 USB-UART adapter
 
 ## Architecture
 
 ```text
-USART1 RX Interrupt
-        |
-        v
+USART1 RX
+    |
+    v
 USART1_IRQHandler()
-        |
-        v
+    |
+    v
 ringbuffer_put()
-        |
-        v
+    |
+    v
+Ring Buffer
+    |
+    v
 Return from ISR
 
 -----------------------
 
 Main Loop
-        |
-        v
+    |
+    v
 usart1_read_char()
-        |
-        v
+    |
+    v
 ringbuffer_get()
-        |
-        v
+    |
+    v
 Application Logic
-        |
-        v
+    |
+    v
 UART Output
 ```
 
