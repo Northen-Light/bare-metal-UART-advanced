@@ -1,6 +1,5 @@
 #include "uart.h"
 #include "mmap-regs.h"
-#include "stdint.h"
 
 char dma_buffer[16];
 
