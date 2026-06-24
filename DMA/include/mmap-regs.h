@@ -13,6 +13,7 @@
   #define USART1_CR3            *((volatile unsigned int *) 0x40013814)
 
   #define DMA1_CCR5             *((volatile unsigned int *) 0x40020058)
+  #define DMA1_IFCR             *((volatile unsigned int *) 0x40020004)
   #define DMA1_CNDTR5           *((volatile unsigned int *) 0x4002005C)
   #define DMA1_CPAR5            *((volatile unsigned int *) 0x40020060)
   #define DMA1_CMAR5            *((volatile unsigned int *) 0x40020064)

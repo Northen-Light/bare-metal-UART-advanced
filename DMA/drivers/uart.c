@@ -1,7 +1,9 @@
 #include "uart.h"
 #include "mmap-regs.h"
 
-char dma_buffer[16];
+dma_cc_callback_t dma_cc_callback;
+
+static char dma_buffer[17];
 
 void usart1_init(void) {
   RCC_APB2ENR |= (1 << 2);
@@ -43,4 +45,14 @@ void usart1_write_char(char c) {
   USART1_DR = c;
 }
 
-void DMA1_Channel5_IRQHandler() {}
+void set_dma_cc_callback(dma_cc_callback_t cb) {
+  dma_cc_callback = cb;
+}
+
+void DMA1_Channel5_IRQHandler() {
+  DMA1_IFCR |= (1 << 16);
+  if (dma_cc_callback) {
+    dma_buffer[16] = '\0';
+    dma_cc_callback(dma_buffer);
+  }
+}
