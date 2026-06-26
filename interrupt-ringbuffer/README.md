@@ -57,10 +57,10 @@ drivers/
 
 utils/
 ├── ringbuffer.c
-├── string.c
+└── string.c
 
 libs/
-├── io.c
+└── io.c
 
 main.c
 startup.c
