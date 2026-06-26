@@ -21,8 +21,8 @@ void usart1_init(void) {
 
   DMA1_CCR5 = 0;
   DMA1_CNDTR5 = DMA_BUFFER_SIZE;
-  DMA1_CPAR5 = (volatile unsigned int)&USART1_DR;
-  DMA1_CMAR5 = (volatile unsigned int)&dma_buffer[0];
+  DMA1_CPAR5 = (uint32_t)&USART1_DR;
+  DMA1_CMAR5 = (uint32_t)dma_buffer;
   DMA1_CCR5 &= ~(1 << 4);
   DMA1_CCR5 |= (1 << 5);
   DMA1_CCR5 &= ~(1 << 6);
@@ -45,13 +45,19 @@ void usart1_write_char(char c) {
   USART1_DR = c;
 }
 
+/*
+ * DMA continuously writes received bytes into a circular buffer.
+ *
+ * The CPU tracks its own read position, while the current DMA write
+ * position is derived from DMA1_CNDTR5.
+ *
+ * Overflow detection is intentionally omitted for simplicity.
+ */
+
 read_char_type_t usart1_read_char(char *ch) {
   uint32_t dma_write_pos = DMA_BUFFER_SIZE - DMA1_CNDTR5;
-
   if (dma_write_pos == read_pos) return READ_CHAR_EMPTY;
-
   *ch = dma_buffer[read_pos];
   read_pos = (read_pos + 1) & (DMA_BUFFER_SIZE - 1);
-
   return READ_CHAR_OK;
 }
